@@ -1,0 +1,115 @@
+﻿@model MvcEnity.Models.userform
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="container-fluid">
+<form action="@Url.Action("Create", "user")" method="post">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label>First Name</label>
+      @Html.TextBoxFor(x => x.firstname, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.firstname)
+    </div>
+    <div class="form-group col-md-6">
+      <label>Last Name</label>
+        @Html.TextBoxFor(x => x.lastname, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.lastname)
+    </div>
+  </div> 
+  <div class="form-group col-md-6">
+    <label>Email</label>
+       @Html.TextBoxFor(x => x.email, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.email)
+  </div>
+  <div class="form-group col-md-6">
+    <label>Address </label>
+     @Html.TextBoxFor(x => x.address, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.address)
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label>Country</label>
+        @Html.DropDownListFor(x => x.countryid,Model.countries ,new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.countryid)
+    </div>
+    <div class="form-group col-md-4">
+      <label>State</label>
+         @Html.DropDownListFor(x => x.stateid,Model.states, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.stateid)
+    </div>
+    <div class="form-group col-md-4">
+      <label>City</label>
+         @Html.DropDownListFor(x => x.cityid,Model.cities, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.cityid)
+    </div>
+  </div>
+  <div class="form-group">
+  <label>Number</label>
+     @Html.TextBoxFor(x => x.number, new { @class="form-control"})
+      @Html.ValidationMessageFor(x => x.number)
+  </div>
+   <div class="modal-footer">
+     <button type="submit" class="btn btn-primary">Insert</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+
+</form>
+
+
+
+@*<label style="color:red;"> @ViewBag.Message</label>*@
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var ddlcountries = $('#countryid');
+        var ddlstates = $('#stateid');
+        var ddlCities = $('#cityid');
+
+        ddlcountries.change(function () {
+            //alert(ddlcountries.val());
+            $.ajax({
+                url: '/user/GetstateBycountryId',
+                method: 'get',
+                data: { countryid: $(this).val() },
+                dataType: 'json',
+                success: function (data) {
+                    ddlstates.empty();
+                    ddlstates.append($('<option/>', { value: "", text: 'Select States' }));
+                    $(data).each(function (index, item) {
+                        ddlstates.append($('<option/>', { value: item.Value, text: item.Text }));
+                    });
+                }
+            });
+        });
+
+
+
+
+        ddlstates.change(function () {
+            //alert(ddlcountries.val());
+            $.ajax({
+                url: '/user/GetcityByStateId',
+                method: 'get',
+                data: { stateid: $(this).val() },
+                dataType: 'json',
+                success: function (data) {
+                    ddlCities.empty();
+                    ddlCities.append($('<option/>', { value: "", text: 'Select States' }));
+                    $(data).each(function (index, item) {
+                        ddlCities.append($('<option/>', { value: item.Value, text: item.Text }));
+                    });
+                }
+            });
+        });
+
+
+
+
+    });
+
+
+</script>
